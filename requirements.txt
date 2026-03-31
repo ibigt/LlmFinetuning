@@ -1,24 +1,20 @@
 # 基础深度学习框架 (对应 CUDA 12.2)
-torch>=2.1.0
-torchvision
-torchaudio
+torch>=2.4.0
 --index-url https://download.pytorch.org/whl/cu121
 
 # 大模型核心库
-transformers>=4.45.0      # 支持 Qwen2.5 系列
-accelerate>=0.34.0        # 多卡并行管理
-peft>=0.12.0              # 参数高效微调 (LoRA/QLoRA)
-trl>=0.10.0               # SFTTrainer 训练器
-bitsandbytes>=0.43.0      # 4-bit 量化支持
+transformers>=4.46.0            # 支持 Qwen2.5 系列
+huggingface-hub>=0.26.0,<1.0    # 与 transformers 兼容的版本
+accelerate>=0.35.0              # 多卡并行管理
+peft>=0.13.0              # 参数高效微调 (LoRA/QLoRA)
+trl>=0.11.0               # SFTTrainer 训练器
+bitsandbytes>=0.44.0      # 4-bit 量化支持
 
 # 数据处理与评估
-datasets>=2.20.0          # 加载与处理数据集
-pandas>=2.0.0             # 处理 train.csv
+datasets>=2.21.0          # 加载与处理数据集
+pandas>=2.2.0             # 处理数据集
 numpy<2.0.0               # 保持与 torch 的兼容性
-scikit-learn              # 评估指标计算
-tqdm                      # 进度条显示
 
 # 其他辅助
-pyyaml                    # 读取配置文件
-sentencepiece             # 分词器依赖
-protobuf                  # 协议缓冲区
+sentencepiece>=0.1.99     # 分词器依赖
+protobuf>=4.25.0          # 协议缓冲区

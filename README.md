@@ -16,6 +16,17 @@ LlmFinetuning/
 ├── README.md              # 项目说明
 └── requirements.txt       # 环境依赖列表
 ```
+## 本地下载模型
+在项目根目录下（LlmFinetuning/models）执行：
+```bash
+# 配置国内镜像
+set HF_ENDPOINT=https://hf-mirror.com
+# 标准下载命令
+hf download Qwen/Qwen2.5-1.5B-Instruct --local-dir Qwen2.5-1.5B-Instruct
+hf download Qwen/Qwen2.5-7B-Instruct --local-dir Qwen2.5-7B-Instruct
+hf download Qwen/Qwen3-32B-Instruct --local-dir Qwen3-32B-Instruct
+```
+
 
 ## 启动微调
 在项目根目录下（LlmFinetuning/）执行：
@@ -30,3 +41,4 @@ accelerate launch --config_file configs/accelerate_config.yaml scripts/train.py
 ```Bash
 nvidia-smi -l 1
 ```
+
