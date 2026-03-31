@@ -6,17 +6,20 @@ import pandas as pd
 import argparse
 import os
 from datasets import Dataset
-from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments, BitsAndBytesConfig
+from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 from trl import SFTTrainer, SFTConfig, DataCollatorForCompletionOnlyLM
 from peft import LoraConfig, prepare_model_for_kbit_training
+import data_utils
 
 # 添加命令行参数解析
 parser = argparse.ArgumentParser(description="电信故障诊断模型微调脚本")
-parser.add_argument("--data_path", type=str, default="train.csv", help="训练数据路径")
-parser.add_argument("--output_dir", type=str, default="./output", help="模型输出目录")
-parser.add_argument("--adapter_dir", type=str, default="./adapter", help="LoRA 适配器保存目录")
-parser.add_argument("--model_id", type=str, default="./models/Qwen2.5-1.5B-Instruct", help="预训练模型 ID")
-parser.add_argument("--batch_size", type=int, default=2, help="每个设备的 batch size")
+parser.add_argument("--do_eval", type=bool, default=True, help="是否评估模型")
+parser.add_argument("--model_path", type=str, default="./models/Qwen2.5-1.5B-Instruct", help="预训练模型ID/路径")
+parser.add_argument("--output_dir", type=str, default="./output/model", help="模型输出目录")
+parser.add_argument("--adapter_dir", type=str, default="./output/adapter", help="LoRA 适配器保存目录")
+parser.add_argument("--train_data_path", type=str, default=None, help="训练数据路径")
+parser.add_argument("--eval_data_path", type=str, default=None, help="验证数据路径")
+parser.add_argument("--batch_size", type=int, default=2, help="每个设备的批次大小")
 parser.add_argument("--gradient_accumulation", type=int, default=8, help="梯度累积步数")
 parser.add_argument("--learning_rate", type=float, default=1e-4, help="学习率")
 parser.add_argument("--epochs", type=int, default=3, help="训练轮数")
@@ -32,14 +35,15 @@ os.makedirs(args.adapter_dir, exist_ok=True)
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 # 1. 配置量化与模型
-model_id = args.model_id
 bnb_config = BitsAndBytesConfig(
-    load_in_4bit=True,
-    bnb_4bit_quant_type="nf4",
-    bnb_4bit_compute_dtype=torch.float16,  # 2080Ti 使用 fp16
+    load_in_4bit=True,                      # 启用 4 位量化
+    bnb_4bit_quant_type="nf4",              # 使用 NormalFloat4 量化类型
+    bnb_4bit_compute_dtype=torch.float16,   # 计算时使用 float16 精度
 )
 
-tokenizer = AutoTokenizer.from_pretrained(model_id)
+# 加载分词器
+tokenizer = AutoTokenizer.from_pretrained(args.model_path)
+# Qwen-2.5 没有专门的pad_token，使用eos_token作为pad_token
 tokenizer.pad_token = tokenizer.eos_token
 
 
@@ -62,18 +66,21 @@ def format_instruction(sample):
 
 
 # 加载数据
-print(f"加载数据: {args.data_path}")
-df = pd.read_csv(args.data_path)
-dataset = Dataset.from_pandas(df).map(format_instruction)
+print(f"加载训练数据: {args.train_data_path}")
+df_train = pd.read_csv(args.train_data_path)
+train_dataset = Dataset.from_pandas(df_train).map(format_instruction)
+print(f"加载验证数据: {args.eval_data_path}")
+df_eval = pd.read_csv(args.eval_data_path)
+eval_dataset = Dataset.from_pandas(df_eval).map(format_instruction)
 
 # 3. 设置 LoRA 插件
 peft_config = LoraConfig(
-    r=16,
-    lora_alpha=32,
-    target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
-    lora_dropout=0.1,
-    bias="none",
-    task_type="CAUSAL_LM",
+    r=16,                   # LoRA 的秩，控制可训练参数的数量
+    lora_alpha=32,          # 控制 Lora 矩阵的维度
+    target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"], # 指定要应用 LoRA 的模型模块
+    lora_dropout=0.1,       # LoRA 的 dropout 率
+    bias="none",            # 不训练偏置参数
+    task_type="CAUSAL_LM",  # 任务类型为因果语言模型
 )
 
 # 4. 训练参数
@@ -83,43 +90,39 @@ sft_config = SFTConfig(
     gradient_accumulation_steps=args.gradient_accumulation,
     learning_rate=args.learning_rate,
     num_train_epochs=args.epochs,
-    lr_scheduler_type="cosine",
-    gradient_checkpointing=True, # 开启梯度检查
-    gradient_checkpointing_kwargs={"use_reentrant": False}, # 配合 Qwen2 使用更稳定
-    fp16=True,  # 2080Ti 必须用 fp16
-    logging_steps=10,
-    save_strategy="epoch",
-    report_to="none",
-    # 将原本报错的参数移至此处
+    lr_scheduler_type="cosine",     # 使用余弦退火学习率调度器
+    gradient_checkpointing=True,    # 开启梯度检查
+    gradient_checkpointing_kwargs={"use_reentrant": False},
+    fp16=True,                   # 使用半精度训练，适合 2080 Ti 显卡
+    logging_steps=1,             # 每 1 步记录一次日志
+    save_strategy="epoch",       # 每个 epoch 保存一次模型
+    eval_strategy="epoch",       # 每个 epoch 评估一次
+    do_eval=args.do_eval,        # 开启评估
+    report_to="none",            # 不报告训练指标
     max_seq_length=args.max_seq_length,
     dataset_text_field="text",
-    dataloader_pin_memory=False,
+    dataloader_pin_memory=False, # 禁用数据加载器的内存锁定
 )
 
-# 5. 只对 Assistant 回答计算 Loss (重要优化)
+# 5. 只对 Assistant 回答计算 Loss
 response_template = "<|im_start|>assistant\n"
 collator = DataCollatorForCompletionOnlyLM(response_template, tokenizer=tokenizer)
 
-# 明确禁用一些可能导致同步超时的底层特性
-os.environ["NCCL_P2P_DISABLE"] = "1"
-os.environ["NCCL_IB_DISABLE"] = "1"
-
 # 6. 启动训练器
 model = AutoModelForCausalLM.from_pretrained(
-    model_id,
+    args.model_path,
     quantization_config=bnb_config,
     device_map={"": 0}  # 强制只使用第一张显卡
 )
+# 准备模型进行量化训练
 model = prepare_model_for_kbit_training(model)
-# model.gradient_checkpointing_enable()
-
-
 
 # 6. 启动训练器
 trainer = SFTTrainer(
     model=model,
-    args=sft_config, # 使用新的 sft_config
-    train_dataset=dataset,
+    args=sft_config,
+    train_dataset=train_dataset,
+    eval_dataset=eval_dataset,
     peft_config=peft_config,
     data_collator=collator,
 )
