@@ -12,9 +12,11 @@ def main():
 
     # 模型与路径参数
     parser.add_argument("--base_model_path", type=str, default="./models/Qwen2.5-1.5B-Instruct", help="原始 Qwen2.5 模型路径")
-    parser.add_argument("--lora_adapter_path", type=str, required=True, help="训练好的 LoRA 适配器路径")
+    parser.add_argument("--lora_adapter_path", type=str, required=False, help="训练好的 LoRA 适配器路径（可选）")
+    parser.add_argument("--use_lora", type=bool, default=True, help="是否加载LoRA适配器")
     parser.add_argument("--test_data_path", type=str, default="./data/eval.csv", help="测试数据 CSV 路径")
     parser.add_argument("--output_result_path", type=str, default="./data/infer_results.csv", help="推理结果保存路径")
+    parser.add_argument("--gpu_id", type=int, default=0, help="使用的显卡序号")
     # 推理生成参数
     parser.add_argument("--max_new_tokens", type=int, default=256, help="生成的最大 token 数")
     parser.add_argument("--temperature", type=float, default=0.1, help="生成温度，控制随机性")
@@ -22,6 +24,9 @@ def main():
     parser.add_argument("--batch_size", type=int, default=1, help="推理批次大小")
 
     args = parser.parse_args()
+
+    # 强制脚本内部也只能看到单卡
+    os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu_id)
 
     print(f"加载分词器: {args.base_model_path}")
     tokenizer = AutoTokenizer.from_pretrained(args.base_model_path)
@@ -41,9 +46,12 @@ def main():
         device_map="auto",
     )
 
-    print(f"注入 LoRA 适配器: {args.lora_adapter_path}")
-    model = PeftModel.from_pretrained(model, args.lora_adapter_path)
-    model.eval()  # 设置为评估模式
+    if args.use_lora and args.lora_adapter_path:
+        print(f"注入 LoRA 适配器: {args.lora_adapter_path}")
+        model = PeftModel.from_pretrained(model, args.lora_adapter_path)
+    else:
+        print("未加载LoRA适配器，使用基础模型")
+    model.eval()
 
     # 3. 加载测试数据
     print(f"读取测试数据: {args.test_data_path}")
@@ -57,12 +65,9 @@ def main():
     # 4. 遍历数据进行推理
     # 注意：由于 2080 Ti 显存限制且生成长度不一，这里采用逐条或小批量推理
     for idx, row in df_test.iterrows():
-        # 构建 System Prompt (必须与 train.py 中完全一致)
-        system_prompt = "你是一个5G电信网络专家，负责根据路测日志和工参诊断故障根因。"
 
-        # 构建 User Input (模拟 train.py 中的 format_instruction)
-        # 注意：这里仅使用了 'question'，如果 eval.csv 有 log_fragment/parameters 列，可以拼接进去
-        user_input = f"场景描述:\n{row['question']}"
+        system_prompt = "你是一个5G电信网络专家，负责根据路测日志和工参诊断故障根因。"
+        user_input = f"{row['question']}"
 
         messages = [
             {"role": "system", "content": system_prompt},
@@ -88,7 +93,13 @@ def main():
                 temperature=args.temperature,
                 top_p=args.top_p,
                 do_sample=True,
-                pad_token_id=tokenizer.eos_token_id
+                pad_token_id=tokenizer.eos_token_id,
+                # repetition_penalty=1.2,  # 惩罚重复token，降低重复内容出现的概率
+                # eos_token_id=tokenizer.eos_token_id,  # 遇到结束符时停止生成
+                # early_stopping=True,  # 当遇到eos_token_id时提前停止
+                # num_beams=1,  # 使用贪心搜索而非束搜索，获得更确定性的输出
+                # num_return_sequences=1,  # 只返回一个序列，确保输出唯一
+                # length_penalty=0.6  # 鼓励更短的输出
             )
 
         # 解码：只获取新生成的部分 (去掉输入的 Prompt)
@@ -101,10 +112,10 @@ def main():
             'original_question': row['question'],
             'predicted_answer': generated_text.strip()
         })
-
         print(f"进度: {idx + 1}/{len(df_test)}")
-        print(f"输入: {row['question'][:50]}...")  # 打印前50个字符预览
-        print(f"输出: {generated_text.strip()}\n{'-' * 50}")
+        print(f"输入: \n{row['question'][:900]}...")
+        print(f"输出: \n{generated_text.strip()}\n{'-' * 50}")
+        print(f"参考答案: {row['answer']}\n{'-' * 50}")
 
     # 6. 保存结果
     result_df = pd.DataFrame(results)
