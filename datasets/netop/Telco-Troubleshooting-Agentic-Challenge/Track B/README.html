@@ -1,0 +1,666 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'><meta name='viewport' content='width=device-width initial-scale=1'>
+<title>README (2)</title></head>
+<body><h1>Track B: Telco Troubleshooting and Optimization Agentic Challenge</h1>
+<h2>Competition Overview</h2>
+<p>This task focuses on IP network operations and maintenance. Participants are required to build intelligent agents that complete IP network fault diagnosis and troubleshooting tasks by calling the CLI simulation interfaces provided by the <strong>Agent Tool Server</strong>.</p>
+<p><strong>Base Model:</strong> The entire competition (Phase 1 / 2 / 3) uses <strong>Qwen3.5-35B-A3B</strong> as the base model. Participants may fine-tune the model (LoRA, full fine-tuning, etc.), but are not allowed to replace it with a different architecture or a model of a different parameter scale.</p>
+<p><strong>Server Core Capabilities:</strong></p>
+<ul>
+<li>Simulates CLI interactions for network devices (Huawei / Cisco / H3C)</li>
+<li>Supports regex whitelist validation for 45+ command categories</li>
+<li>Faithfully reproduces vendor-level syntax errors (incomplete / unrecognized / ambiguous / wrong parameter)</li>
+<li>Multiple command output file types covering routing tables, BGP, VXLAN, SRv6, and more</li>
+
+</ul>
+<hr />
+<h2>Competition Design</h2>
+<h3>Schedule Overview</h3>
+<figure><table>
+<thead>
+<tr><th>Phase</th><th>Name</th><th>Duration</th><th>Purpose</th><th>Problem Scale &amp; Requirements</th><th>Participant Actions</th></tr></thead>
+<tbody><tr><td><strong>Phase 1</strong></td><td>Open Practice</td><td>3 April–4 May</td><td>Debug Agent, familiarize with API</td><td>50 problems / Multi vendor / advanced protocols</td><td>Run locally, submit result.csv</td></tr><tr><td><strong>Phase 2</strong></td><td>Elimination Round</td><td>4 May-18 May</td><td>Select top participants for Phase 3</td><td>100 problems / multi-vendor / advanced protocols</td><td>Run locally, 1 submission only, upload execution trace and result.csv</td></tr><tr><td><strong>Phase 3</strong></td><td>Final</td><td>18 May-29 May</td><td>Final ranking</td><td>70 problems / multi-vendor / advanced protocols</td><td>Server-side Docker auto-execution</td></tr></tbody>
+</table></figure>
+<h3>Detailed Problem Distribution</h3>
+<figure><table>
+<thead>
+<tr><th>Phase</th><th>Problem Composition</th><th>Task Types</th><th>Protocols Covered (examples, not exhaustive)</th><th>Device Vendors</th></tr></thead>
+<tbody><tr><td><strong>Phase 1</strong></td><td>32-node financial network &amp; 22-node cloud computing network (50 problems)</td><td>Topology reconstruction, path query, fault localization</td><td>+LLDP, OSPF, VXLAN</td><td><strong>Multi-vendor mix</strong></td></tr><tr><td><strong>Phase 2</strong></td><td>40-node campus network (100)</td><td>Topology reconstruction, path query, fault localization</td><td>+VLAN, VRRP, MP-BGP</td><td><strong>Multi-vendor mix</strong></td></tr><tr><td><strong>Phase 3</strong></td><td>64-node financial network (70)</td><td>Topology reconstruction, path query, fault localization</td><td>+VXLAN, EVPN, SRv6, ISIS, BGP</td><td><strong>Multi-vendor mix</strong></td></tr></tbody>
+</table></figure>
+<h3>Phase 1 (Open Practice)</h3>
+<ul>
+<li><p><strong>Number of Problems:</strong> 50</p>
+</li>
+<li><p><strong>Execution Environment:</strong> Participants run Agent locally</p>
+</li>
+<li><p><strong>Base Model:</strong> Qwen3.5-35B-A3B (participants may fine-tune)</p>
+</li>
+<li><p><strong>API Call Limit:</strong> Max <strong>1,000 API calls per participant per day</strong> (only Phase 1 enforces this daily quota; Phase 2 and Phase 3 do not have this restriction)</p>
+</li>
+<li><p><strong>Scoring:</strong> Participants submit <code>result.csv</code>; scored by <strong>accuracy only</strong> (the sole evaluation metric for Phase 1)</p>
+</li>
+<li><p><strong>Tool Call Rules:</strong></p>
+<ul>
+<li>Agent must call tools <strong>sequentially</strong> when solving a single problem; no concurrent calls within a problem</li>
+<li>Max concurrency per participant is <strong>2</strong> (i.e., at most 2 problems running in parallel)</li>
+
+</ul>
+</li>
+<li><p><strong>Onboarding:</strong> Server source code and local deployment guide provided to help participants deploy locally</p>
+</li>
+
+</ul>
+<h3>Phase 2 (Elimination Round)</h3>
+<ul>
+<li><strong>Number of Problems:</strong> 100 (released in batches of <strong>20 problems every 3 days</strong>)</li>
+<li><strong>Base Model:</strong> Qwen3.5-35B-A3B (participants may fine-tune)</li>
+<li><strong>Submission Limit:</strong> Each participant is allowed <strong>only three submissions</strong>; execution trace must be uploaded to the server. Unlike Phase 1, there is no daily API call quota, but participants must ensure at least a single run completes successfully.</li>
+<li><strong>Scoring:</strong> <strong>Accuracy</strong> as the primary metric; for participants with the same accuracy, the <strong>number of API calls used to solve correct problems</strong> serves as the secondary metric (fewer calls = higher rank)</li>
+<li><strong>Selection Mechanism:</strong> Participants reserve a submission time slot; top 30 advance to the final</li>
+<li><strong>Focus:</strong> Agent generalization across multi-vendor environments and stability in one-shot execution</li>
+
+</ul>
+<h3>Phase 3 (Final)</h3>
+<ul>
+<li><p><strong>Number of Problems:</strong> 70</p>
+</li>
+<li><p><strong>Participants:</strong> Top 30 selected from Phase 2</p>
+</li>
+<li><p><strong>Execution Environment:</strong> Organizer-provided GPU resources + isolated Docker environment</p>
+</li>
+<li><p><strong>Base Model:</strong> Qwen3.5-35B-A3B (participants may fine-tune)</p>
+</li>
+<li><p><strong>Time Limit:</strong> Must be completed within 24 hours</p>
+</li>
+<li><p><strong>Network Data:</strong> Uses <strong>different network data</strong> from Phase 1 / 2</p>
+</li>
+<li><p><strong>Focus:</strong> Complex protocol reasoning (SRv6/EVPN) and deep fault isolation in large-scale networks (64 nodes)</p>
+</li>
+<li><p><strong>Resource Allocation:</strong></p>
+<ul>
+<li><strong>GPU Resources:</strong> Huawei Cloud GPU instances for deploying the base model, independently allocated per participant</li>
+<li><strong>Agent Tool Server:</strong> Deployed on HuggingFace free CPU resources (free within 24h)</li>
+
+</ul>
+</li>
+<li><p><strong>Base Model:</strong> Qwen3.5-35B-A3B, deployed by the organizer to each participant&#39;s GPU instance</p>
+</li>
+<li><p><strong>Submission Requirements:</strong> Participants must upload their <strong>fine-tuned model weights</strong> and <strong>Agent code</strong> to the organizer; the organizer will deploy and execute them in the isolated environment</p>
+</li>
+
+</ul>
+<hr />
+<h2>Authentication &amp; Security</h2>
+<h3>Agent Tool Server API</h3>
+<p>To help participants get started quickly, we provide access to an online Agent Tool API with two locations. </p>
+<pre><code>- Hong Kong &amp; Others: 124.71.227.61
+- China: 120.46.145.77
+</code></pre>
+<h3>Token Authentication</h3>
+<p>All API requests must include a Bearer Token:</p>
+<pre><code>Authorization: ${Token}
+</code></pre>
+<p>Token type is <strong>READ permission</strong>, only allowing calls to the <code>/api/agent/execute</code> endpoint.</p>
+<h3>Security Measures</h3>
+<figure><table>
+<thead>
+<tr><th>Measure</th><th>Implementation</th></tr></thead>
+<tbody><tr><td>Access Authentication</td><td>Bearer Token validation</td></tr><tr><td>Rate Limiting</td><td>Nginx rate limit: 50 req/s per IP</td></tr><tr><td>Daily Quota</td><td>1,000 calls per participant per day (Phase 1 only)</td></tr><tr><td>Concurrency Limit</td><td>Max 2 concurrent per participant</td></tr><tr><td>Network Isolation</td><td>Backends have no public IP; only the router is exposed</td></tr><tr><td>Fault Isolation</td><td>Backend failures are automatically circuit-broken; no impact on other nodes</td></tr></tbody>
+</table></figure>
+<hr />
+<h2>API Reference</h2>
+<h3>Request</h3>
+<pre><code>POST /api/agent/execute
+Content-Type: application/json
+Authorization: Bearer ${Token}
+
+{
+    &quot;device_name&quot;: &quot;BoardLeaf1&quot;,
+    &quot;command&quot;: &quot;display ip routing-table&quot;
+}
+</code></pre>
+<h3>Response</h3>
+<p><strong>Success (200):</strong></p>
+<pre><code class='language-json' lang='json'>{
+    &quot;status&quot;: &quot;success&quot;,
+    &quot;device_name&quot;: &quot;BoardLeaf1&quot;,
+    &quot;vendor&quot;: &quot;huawei&quot;,
+    &quot;command_executed&quot;: &quot;display ip routing-table&quot;,
+    &quot;result&quot;: &quot;&lt;BoardLeaf1&gt; display ip routing-table\n...&quot;
+}
+</code></pre>
+<p><strong>Command Syntax Error (422):</strong></p>
+<pre><code class='language-json' lang='json'>{
+    &quot;status&quot;: &quot;execution_failed&quot;,
+    &quot;device_name&quot;: &quot;BoardLeaf1&quot;,
+    &quot;vendor&quot;: &quot;huawei&quot;,
+    &quot;command_executed&quot;: &quot;display ip rout&quot;,
+    &quot;result&quot;: &quot;&lt;BoardLeaf1&gt; display ip rout\n                              ^\nError: Incomplete command found at &#39;^&#39; position.&quot;
+}
+</code></pre>
+<p><strong>Device Not Found (404):</strong></p>
+<pre><code class='language-json' lang='json'>{
+    &quot;error&quot;: &quot;Device &#39;UnknownDevice&#39; not found&quot;
+}
+</code></pre>
+<hr />
+<h2>Available Device Commands</h2>
+<p>This section provides a comprehensive reference of all network device commands available for interacting with the Agent Tool Server. Commands are organized by vendor and device type, covering routers, switches, and firewalls from <strong>Huawei (VRP)</strong>, <strong>Cisco (IOS/IOS-XE/NX-OS)</strong>, and <strong>H3C (Comware)</strong>.</p>
+<h3>Supported Vendors &amp; Device Types</h3>
+<figure><table>
+<thead>
+<tr><th>Vendor</th><th>Routers</th><th>Switches</th><th>Firewalls</th></tr></thead>
+<tbody><tr><td>Huawei (VRP)</td><td>Supported</td><td>Supported</td><td>Supported</td></tr><tr><td>Cisco (IOS/IOS-XE/NX-OS)</td><td>Supported</td><td>Supported</td><td>Supported</td></tr><tr><td>H3C (Comware)</td><td>Supported</td><td>Supported</td><td>N/A</td></tr></tbody>
+</table></figure>
+<h3>Placeholder Notation</h3>
+<figure><table>
+<thead>
+<tr><th>Placeholder</th><th>Meaning</th></tr></thead>
+<tbody><tr><td><code>[x]</code></td><td>Port name (e.g., <code>GigabitEthernet0/0/1</code>)</td></tr><tr><td><code>[id]</code></td><td>Interface ID</td></tr><tr><td><code>[xxx]</code></td><td>VRF or VPN instance name</td></tr><tr><td><code>[type] [num]</code></td><td>Interface type and number (e.g., <code>GigabitEthernet 1/0/1</code>)</td></tr></tbody>
+</table></figure>
+<blockquote><p>Replace placeholders with actual values from your network topology when calling commands via the API.</p>
+</blockquote>
+<hr />
+<h3>1. Configuration &amp; Logging</h3>
+<figure><table>
+<thead>
+<tr><th>Function</th><th>Huawei (All)</th><th>Cisco Router</th><th>Cisco Switch</th><th>Cisco FW</th><th>H3C Router</th><th>H3C Switch</th></tr></thead>
+<tbody><tr><td>View current configuration</td><td><code>display current-configuration</code></td><td><code>show running-config</code></td><td><code>show running-config</code></td><td><code>show running-config</code></td><td><code>display current-configuration</code></td><td><code>display current-configuration</code></td></tr><tr><td>View log buffer</td><td><code>display logbuffer</code></td><td><code>show logging</code></td><td><code>show logging</code></td><td><code>show logging</code></td><td><code>display logbuffer</code></td><td><code>display logbuffer</code></td></tr></tbody>
+</table></figure>
+<h3>2. Alarms &amp; Monitoring</h3>
+<figure><table>
+<thead>
+<tr><th>Function</th><th>Huawei (All)</th><th>Cisco Router</th><th>Cisco Switch</th><th>Cisco FW</th><th>H3C Router</th><th>H3C Switch</th></tr></thead>
+<tbody><tr><td>Active alarms</td><td><code>display alarm active</code></td><td><code>show facility-alarm status</code></td><td>N/A</td><td>N/A</td><td><code>display alarm active</code></td><td><code>display alarm</code></td></tr><tr><td>Memory usage</td><td><code>display memory-usage</code></td><td><code>show processes memory</code></td><td><code>show processes memory</code></td><td><code>show processes memory</code></td><td><code>display memory</code></td><td><code>display memory</code></td></tr></tbody>
+</table></figure>
+<h3>3. Interface &amp; Link Status</h3>
+<figure><table>
+<thead>
+<tr><th>Function</th><th>Huawei (All)</th><th>Cisco Router</th><th>Cisco Switch</th><th>Cisco FW</th><th>H3C Router</th><th>H3C Switch</th></tr></thead>
+<tbody><tr><td>LLDP neighbor summary</td><td><code>display lldp neighbor brief</code></td><td><code>show lldp neighbors</code></td><td><code>show lldp neighbors</code></td><td>N/A</td><td><code>display lldp neighbor-information</code></td><td><code>display lldp neighbor-information</code></td></tr><tr><td>Interface brief status</td><td><code>display interface brief</code></td><td><code>show ip interface brief</code></td><td><code>show interface brief</code></td><td><code>show interface summary</code></td><td><code>display interface brief</code></td><td><code>display interface brief</code></td></tr><tr><td>Interface description</td><td><code>display interface description</code></td><td><code>show interface description</code></td><td><code>show interface description</code></td><td>N/A</td><td>N/A</td><td>N/A</td></tr><tr><td>Link aggregation (Eth-Trunk)</td><td><code>display eth-trunk</code></td><td><code>show etherchannel summary</code></td><td>N/A</td><td>N/A</td><td><code>display link-aggregation summary</code></td><td>N/A</td></tr><tr><td>IP interface brief</td><td><code>display ip interface brief</code></td><td><code>show ip interface brief</code></td><td><code>show ip interface brief</code></td><td><code>show interface ip brief</code></td><td><code>display ip interface brief</code></td><td><code>display ip interface brief</code></td></tr><tr><td>IPv6 interface</td><td><code>display ipv6 interface [x]</code></td><td><code>show ipv6 interface [type] [num]</code></td><td>N/A</td><td>N/A</td><td><code>display ipv6 interface [type] [num]</code></td><td>N/A</td></tr></tbody>
+</table></figure>
+<h3>4. Layer 2 (VLAN, MAC, STP)</h3>
+<figure><table>
+<thead>
+<tr><th>Function</th><th>Huawei (All)</th><th>Cisco Router</th><th>Cisco Switch</th><th>Cisco FW</th><th>H3C Router</th><th>H3C Switch</th></tr></thead>
+<tbody><tr><td>VLAN status</td><td><code>display vlan</code></td><td><code>show vlans</code></td><td><code>show vlan</code></td><td><code>show vlan</code></td><td><code>display vlan</code></td><td><code>display vlan</code></td></tr><tr><td>MAC address table</td><td><code>display mac-address</code></td><td>N/A</td><td><code>show mac address-table</code></td><td><code>show mac-address-table</code></td><td><code>display mac-address</code></td><td><code>display mac-address</code></td></tr><tr><td>STP summary</td><td><code>display stp brief</code></td><td><code>show spanning-tree summary</code></td><td><code>show spanning-tree summary</code></td><td>N/A</td><td>N/A</td><td><code>display stp brief</code></td></tr><tr><td>STP interface state</td><td><code>display stp interface [x]</code></td><td><code>show spanning-tree interface [id]</code></td><td>N/A</td><td>N/A</td><td><code>display stp interface brief</code></td><td>N/A</td></tr></tbody>
+</table></figure>
+<h3>5. Address Resolution &amp; Neighbor Discovery</h3>
+<figure><table>
+<thead>
+<tr><th>Function</th><th>Huawei (All)</th><th>Cisco Router</th><th>Cisco Switch</th><th>Cisco FW</th><th>H3C Router</th><th>H3C Switch</th></tr></thead>
+<tbody><tr><td>ARP table</td><td><code>display arp all</code> (Router)<br><code>display arp</code> (Switch/FW)</td><td><code>show ip arp</code></td><td><code>show ip arp</code></td><td><code>show arp</code></td><td><code>display arp all</code></td><td><code>display arp all</code></td></tr><tr><td>IPv6 neighbors</td><td><code>display ipv6 neighbors</code></td><td><code>show ipv6 neighbors</code></td><td><code>show ipv neighbor</code></td><td><code>show ipv6 neighbor</code></td><td><code>display ipv6 neighbors</code></td><td><code>display ipv6 neighbor all</code></td></tr></tbody>
+</table></figure>
+<h3>6. Routing</h3>
+<figure><table>
+<thead>
+<tr><th>Function</th><th>Huawei (All)</th><th>Cisco Router</th><th>Cisco Switch</th><th>Cisco FW</th><th>H3C Router</th><th>H3C Switch</th></tr></thead>
+<tbody><tr><td>IPv4 routing table</td><td><code>display ip routing-table</code></td><td><code>show ip route</code></td><td><code>show ip route</code></td><td><code>show route</code></td><td><code>display ip routing-table</code></td><td><code>display ip routing-table</code></td></tr><tr><td>VPN instance routing table</td><td><code>display ip routing-table vpn-instance [x]</code></td><td><code>show ip route vrf [xxx]</code></td><td>N/A</td><td>N/A</td><td><code>display ip routing-table vpn-instance [xxx]</code></td><td>N/A</td></tr><tr><td>IPv6 routing table</td><td><code>display ipv6 routing-table</code></td><td><code>show ipv6 route</code></td><td><code>show ipv6 route</code></td><td><code>show ipv6 route</code></td><td><code>display ipv6 routing-table</code></td><td><code>display ipv6 routing-table</code></td></tr></tbody>
+</table></figure>
+<h3>7. OSPF</h3>
+<figure><table>
+<thead>
+<tr><th>Function</th><th>Huawei (All)</th><th>Cisco Router</th><th>Cisco Switch</th><th>Cisco FW</th><th>H3C Router</th><th>H3C Switch</th></tr></thead>
+<tbody><tr><td>OSPF neighbor state</td><td><code>display ospf peer</code></td><td><code>show ip ospf neighbor</code></td><td><code>show ip ospf neighbors</code></td><td><code>show ospf neighbor</code></td><td><code>display ospf peer</code></td><td><code>display ospf peer</code></td></tr><tr><td>OSPF internal routes</td><td><code>display ospf routing</code></td><td><code>show ip route ospf</code></td><td><code>show ip ospf route</code></td><td><code>show route ospf</code></td><td><code>display ospf routing</code></td><td><code>display ospf routing</code></td></tr><tr><td>OSPF LSDB</td><td><code>display ospf lsdb</code></td><td><code>show ip ospf database</code></td><td><code>show ip ospf database</code></td><td><code>show ospf database</code></td><td><code>display ospf lsdb</code></td><td><code>display ospf lsdb</code></td></tr></tbody>
+</table></figure>
+<h3>8. BGP</h3>
+<figure><table>
+<thead>
+<tr><th>Function</th><th>Huawei (All)</th><th>Cisco Router</th><th>Cisco Switch</th><th>Cisco FW</th><th>H3C Router</th><th>H3C Switch</th></tr></thead>
+<tbody><tr><td>BGP EVPN routes</td><td><code>display bgp evpn all routing-table</code></td><td><code>show bgp l2vpn evpn</code></td><td>N/A</td><td>N/A</td><td><code>display bgp l2vpn evpn</code></td><td><code>display bgp l2vpn evpn</code></td></tr><tr><td>BGP VPNv4 routes</td><td><code>display bgp vpnv4 all routing-table</code></td><td><code>show bgp vpnv4 unicast all</code></td><td>N/A</td><td>N/A</td><td><code>display bgp vpnv4 all routing-table</code></td><td><code>display bgp routing-table vpnv4</code></td></tr></tbody>
+</table></figure>
+<h3>9. VXLAN</h3>
+<figure><table>
+<thead>
+<tr><th>Function</th><th>Huawei (All)</th><th>Cisco Router</th><th>Cisco Switch</th><th>Cisco FW</th><th>H3C Router</th><th>H3C Switch</th></tr></thead>
+<tbody><tr><td>VXLAN tunnel status</td><td><code>display vxlan tunnel</code></td><td><code>show nve vni</code><br><code>show nve peers</code></td><td>N/A</td><td><code>show nve</code></td><td><code>display vxlan tunnel</code></td><td><code>display vxlan tunnel</code></td></tr><tr><td>VXLAN troubleshooting</td><td><code>display vxlan troubleshooting</code></td><td><code>show nve [detailed debugs]</code></td><td>N/A</td><td>N/A</td><td><code>display vxlan troubleshooting</code></td><td>N/A</td></tr></tbody>
+</table></figure>
+<h3>10. High Availability &amp; Forwarding</h3>
+<figure><table>
+<thead>
+<tr><th>Function</th><th>Huawei (All)</th><th>Cisco Router</th><th>Cisco Switch</th><th>Cisco FW</th><th>H3C Router</th><th>H3C Switch</th></tr></thead>
+<tbody><tr><td>VRRP verbose state</td><td><code>display vrrp verbose</code></td><td><code>show vrrp detail</code></td><td>N/A</td><td>N/A</td><td><code>display vrrp verbose</code></td><td>N/A</td></tr><tr><td>BFD session state</td><td><code>display bfd session all</code></td><td><code>show bfd neighbors</code></td><td><code>show bfd neighbors</code></td><td><code>show bfd neighbors</code></td><td><code>display bfd session</code></td><td><code>display bfd session</code></td></tr></tbody>
+</table></figure>
+<h3>11. DHCP</h3>
+<figure><table>
+<thead>
+<tr><th>Function</th><th>Huawei (All)</th><th>Cisco Router</th><th>Cisco Switch</th><th>Cisco FW</th><th>H3C Router</th><th>H3C Switch</th></tr></thead>
+<tbody><tr><td>DHCP address pool</td><td><code>display ip pool</code></td><td><code>show ip dhcp pool</code></td><td>N/A</td><td><code>show ip local pool [x]</code></td><td><code>display ip pool</code></td><td><code>display ip pool</code></td></tr></tbody>
+</table></figure>
+<h3>12. SRv6 (Segment Routing over IPv6)</h3>
+<figure><table>
+<thead>
+<tr><th>Function</th><th>Huawei (All)</th><th>Cisco Router</th><th>Cisco Switch</th><th>Cisco FW</th><th>H3C Router</th><th>H3C Switch</th></tr></thead>
+<tbody><tr><td>SRv6 Policy status</td><td><code>display srv6-te policy status</code></td><td><code>show segment-routing srv6 policy</code></td><td>N/A</td><td>N/A</td><td><code>display segment-routing ipv6 te policy</code></td><td>N/A</td></tr><tr><td>SRv6 Policy details</td><td><code>display srv6-te policy</code></td><td>N/A</td><td>N/A</td><td>N/A</td><td><code>display segment-routing ipv6 te policy</code></td><td>N/A</td></tr><tr><td>SRv6 End forwarding info</td><td><code>display segment-routing ipv6 local-sid end forwarding</code></td><td>N/A</td><td>N/A</td><td>N/A</td><td><code>display segment-routing ipv6 local-sid</code></td><td>N/A</td></tr><tr><td>SRv6 End.X forwarding info</td><td><code>display segment-routing ipv6 local-sid end-x forwarding</code></td><td>N/A</td><td>N/A</td><td>N/A</td><td><code>display segment-routing ipv6 local-sid</code></td><td>N/A</td></tr></tbody>
+</table></figure>
+<hr />
+<h3>Quick Command Reference by Vendor</h3>
+<p>Below are consolidated command lists grouped by vendor for quick reference when building your Agent&#39;s tool-calling logic.</p>
+<details>
+<summary><strong>Huawei (VRP) - All Device Types</strong></summary></details>
+<pre><code># Configuration &amp; Logging
+display current-configuration
+display logbuffer
+
+# Monitoring
+display alarm active
+display memory-usage
+
+# Interface &amp; Link
+display lldp neighbor brief
+display interface brief
+display interface description
+display eth-trunk
+display ip interface brief
+display ipv6 interface [x]
+
+# Layer 2
+display vlan
+display mac-address
+display stp brief
+display stp interface [x]
+
+# Address Resolution
+display arp all          # Router; use &quot;display arp&quot; on Switch/Firewall
+display ipv6 neighbors
+
+# Routing
+display ip routing-table
+display ip routing-table vpn-instance [x]
+display ipv6 routing-table
+
+# OSPF
+display ospf peer
+display ospf routing
+display ospf lsdb
+
+# BGP
+display bgp evpn all routing-table
+display bgp vpnv4 all routing-table
+
+# VXLAN
+display vxlan tunnel
+display vxlan troubleshooting
+
+# HA &amp; Forwarding
+display vrrp verbose
+display bfd session all
+
+# DHCP
+display ip pool
+
+# SRv6
+display srv6-te policy status
+display srv6-te policy
+display segment-routing ipv6 local-sid end forwarding
+display segment-routing ipv6 local-sid end-x forwarding
+</code></pre>
+<p></details></p>
+<details>
+<summary><strong>Cisco (IOS/IOS-XE/NX-OS) - Router</strong></summary></details>
+<pre><code># Configuration &amp; Logging
+show running-config
+show logging
+
+# Monitoring
+show facility-alarm status
+show processes memory
+
+# Interface &amp; Link
+show lldp neighbors
+show ip interface brief
+show interface description
+show etherchannel summary
+show ipv6 interface [type] [num]
+
+# Layer 2
+show vlans
+show spanning-tree summary
+show spanning-tree interface [id]
+show ip arp
+show ipv6 neighbors
+
+# Routing
+show ip route
+show ip route vrf [xxx]
+show ipv6 route
+
+# OSPF
+show ip ospf neighbor
+show ip route ospf
+show ip ospf database
+
+# BGP
+show bgp l2vpn evpn
+show bgp vpnv4 unicast all
+
+# VXLAN
+show nve vni
+show nve peers
+show nve [detailed debugs]
+
+# HA &amp; Forwarding
+show vrrp detail
+show bfd neighbors
+
+# DHCP
+show ip dhcp pool
+
+# SRv6
+show segment-routing srv6 policy
+</code></pre>
+<p></details></p>
+<details>
+<summary><strong>Cisco (IOS/IOS-XE/NX-OS) - Switch</strong></summary></details>
+<pre><code># Configuration &amp; Logging
+show running-config
+show logging
+
+# Monitoring
+show processes memory
+
+# Interface &amp; Link
+show lldp neighbors
+show interface brief
+show ip interface brief
+
+# Layer 2
+show vlan
+show mac address-table
+show spanning-tree summary
+show ip arp
+show ipv neighbor
+
+# Routing
+show ip route
+show ipv6 route
+
+# OSPF
+show ip ospf neighbors
+show ip ospf route
+show ip ospf database
+
+# HA &amp; Forwarding
+show bfd neighbors
+
+# DHCP
+show ip dhcp pool
+</code></pre>
+<p></details></p>
+<details>
+<summary><strong>Cisco (IOS/IOS-XE/NX-OS) - Firewall</strong></summary></details>
+<pre><code># Configuration &amp; Logging
+show running-config
+show logging
+
+# Monitoring
+show processes memory
+
+# Interface &amp; Link
+show interface summary
+show interface ip brief
+
+# Layer 2
+show vlan
+show mac-address-table
+show arp
+show ipv6 neighbor
+
+# Routing
+show route
+show ipv6 route
+
+# OSPF
+show ospf neighbor
+show route ospf
+show ospf database
+
+# VXLAN
+show nve
+
+# DHCP
+show ip local pool [x]
+</code></pre>
+<p></details></p>
+<details>
+<summary><strong>H3C (Comware) - Router</strong></summary></details>
+<pre><code># Configuration &amp; Logging
+display current-configuration
+display logbuffer
+
+# Monitoring
+display alarm active
+display memory
+
+# Interface &amp; Link
+display lldp neighbor-information
+display interface brief
+display ip interface brief
+display ipv6 interface [type] [num]
+
+# Layer 2
+display vlan
+display mac-address
+display stp brief
+display arp all
+display ipv6 neighbors
+
+# Routing
+display ip routing-table
+display ip routing-table vpn-instance [xxx]
+display ipv6 routing-table
+
+# OSPF
+display ospf peer
+display ospf routing
+display ospf lsdb
+
+# BGP
+display bgp l2vpn evpn
+display bgp vpnv4 all routing-table
+
+# VXLAN
+display vxlan tunnel
+display vxlan troubleshooting
+
+# HA &amp; Forwarding
+display vrrp verbose
+display bfd session
+
+# DHCP
+display ip pool
+
+# SRv6
+display segment-routing ipv6 te policy
+display segment-routing ipv6 local-sid
+</code></pre>
+<p></details></p>
+<details>
+<summary><strong>H3C (Comware) - Switch</strong></summary></details>
+<pre><code># Configuration &amp; Logging
+display current-configuration
+display logbuffer
+
+# Monitoring
+display alarm
+display memory
+
+# Interface &amp; Link
+display lldp neighbor-information
+display interface brief
+display ip interface brief
+
+# Layer 2
+display vlan
+display mac-address
+display stp brief
+display arp all
+display ipv6 neighbor all
+
+# Routing
+display ip routing-table
+display ipv6 routing-table
+
+# OSPF
+display ospf peer
+display ospf routing
+display ospf lsdb
+
+# BGP
+display bgp l2vpn evpn
+display bgp routing-table vpnv4
+
+# VXLAN
+display vxlan tunnel
+
+# HA &amp; Forwarding
+display bfd session
+
+# DHCP
+display ip pool
+</code></pre>
+<p></details></p>
+<hr />
+<h3>Important Notes</h3>
+<ul>
+<li>Commands marked as <strong>N/A</strong> are not supported on that vendor/device combination. Attempting to use them will result in a command syntax error (HTTP 422).</li>
+<li><strong>Placeholder values</strong> in brackets (e.g., <code>[x]</code>, <code>[xxx]</code>) must be replaced with actual interface names, VRF/VPN instance names, or interface types/numbers appropriate for your network topology.</li>
+<li>On <strong>Cisco NX-OS switches</strong>, certain features (e.g., NVE/VXLAN) require activation via <code>configure terminal</code> followed by the appropriate <code>feature</code> command before the related <code>show</code> commands become available.</li>
+<li>The Agent Tool Server faithfully reproduces vendor-level syntax errors including <strong>incomplete</strong>, <strong>unrecognized</strong>, <strong>ambiguous</strong>, and <strong>wrong parameter</strong> errors (HTTP 422). Use this to validate your Agent&#39;s error handling.</li>
+
+</ul>
+<hr />
+<h2>Participant Guide</h2>
+<h3>Environment Requirements</h3>
+<ul>
+<li>Participants run Agent <strong>locally</strong> (Phase 1 / Phase 2)</li>
+<li>Agent calls the remote Agent Tool Server via HTTP</li>
+<li>No need to deploy the server locally (but a fallback option is provided)</li>
+
+</ul>
+<h3>Model Rules</h3>
+<ol start='' >
+<li><strong>Base Model:</strong> The entire competition (Phase 1 / 2 / 3) uses <strong>Qwen3.5-35B-A3B</strong> as the base model</li>
+<li><strong>Fine-tuning Allowed:</strong> Participants may fine-tune Qwen3.5-35B-A3B (LoRA, full fine-tuning, etc.)</li>
+<li><strong>No Replacement:</strong> Replacing it with a different architecture or parameter scale is not allowed; final inference must be based on Qwen3.5-35B-A3B</li>
+<li><strong>Phase 3 Submission:</strong> For Phase 3, the organizer deploys the base model on GPU instances; participants only need to submit their fine-tuned weights</li>
+
+</ol>
+<h3>API Call Rules</h3>
+<ol start='' >
+<li><strong>Sequential Calls:</strong> When solving a single problem, the Agent must call tools sequentially; no concurrent calls within a problem</li>
+<li><strong>Concurrency Limit:</strong> Each participant may run at most 2 tasks simultaneously (2 problems in parallel)</li>
+<li><strong>Daily Quota:</strong> Max 1,000 API calls per day (Phase 1 only; Phase 2 and Phase 3 are not subject to this limit)</li>
+<li><strong>Authentication:</strong> Every request must include the Authorization header</li>
+
+</ol>
+<h3>Local Server Deployment</h3>
+<p>If server access issues occur, participants may deploy the Agent Tool Server locally:</p>
+<ol start='' >
+<li>First, unzip <code>devices_outputs.zip</code> inside the same directory</li>
+<li>Then, run <code>python server.py</code> to deploy the local server.</li>
+<li>An example agent workflow is provide in <code>agent/</code> folder.</li>
+
+</ol>
+<p>After local deployment, change the Agent&#39;s target URL to <code>http://localhost:7860/api/agent/execute</code>; no Token required.</p>
+<hr />
+<h2>Evaluation Metrics &amp; Scoring</h2>
+<p>Each phase uses different evaluation criteria, progressively increasing in rigor:</p>
+<h3>Scoring by Phase</h3>
+<figure><table>
+<thead>
+<tr><th>Phase</th><th>Primary Metric</th><th>Secondary Metric</th><th>Description</th></tr></thead>
+<tbody><tr><td><strong>Phase 1</strong></td><td>Accuracy</td><td>—</td><td>Scored by accuracy only</td></tr><tr><td><strong>Phase 2</strong></td><td>Accuracy</td><td>API Call Count</td><td>Accuracy first; ties broken by fewer API calls on correct problems</td></tr><tr><td><strong>Phase 3</strong></td><td>Accuracy + Speed</td><td>—</td><td>Correctness and time-based scoring (see table below)</td></tr></tbody>
+</table></figure>
+<h3>Phase 3: Detailed Scoring Standards</h3>
+<ul>
+<li><strong>Pass@1 (Consistency Metric):</strong> Rewards agents with high success rates across 4 independent trials to ensure solution robustness.</li>
+<li><strong>TTS (Time To Solve):</strong> Measures efficiency in pinpointing and fixing faults via logical deduction.</li>
+<li><strong>Execution Guardrail:</strong> A strict 15-minute cutoff is implemented to prevent infinite loops and resource exhaustion.</li>
+
+</ul>
+<p>Points are awarded only if the task is completed correctly within the allotted time. We will select the fastest solution in 4 generations. The faster the resolution, the higher the score:</p>
+<figure><table>
+<thead>
+<tr><th>Answering time</th><th>Discount</th></tr></thead>
+<tbody><tr><td><code>&lt; 5 minutes</code></td><td>100%</td></tr><tr><td><code>5 minutes  - 10 minutes</code></td><td>80%</td></tr><tr><td><code>10 minutes - 15 minutes</code></td><td>60%</td></tr><tr><td><code>&gt; 15 minutes</code></td><td>0%</td></tr></tbody>
+</table></figure>
+<hr />
+<h2>Quick Start: Running the Agent with OpenClaw</h2>
+<p>The <code>agent/</code> directory provides a ready-to-use agent solution based on <strong>OpenClaw</strong> (an open-source agentic framework). By combining the pre-configured skills, OpenClaw configuration files, and the batch evaluation script, participants can quickly launch an agent to solve CTBench problems locally.</p>
+<h3>Prerequisites</h3>
+<ol start='' >
+<li><strong>Clone and install OpenClaw</strong> from its open-source repository, and ensure it runs locally (refer to the OpenClaw official documentation for installation steps).</li>
+<li><strong>Python 3.8+</strong> and <strong>Node.js</strong> installed.</li>
+<li><strong>Agent Tool Server</strong> running locally at <code>http://127.0.0.1:7860</code> (or the remote server with a valid Token).</li>
+
+</ol>
+<h3>Directory Structure</h3>
+<pre><code>agent/
+├── openclaw_config/          # OpenClaw configuration files
+│   ├── IDENTITY.md           # Agent identity definition (name, persona)
+│   ├── SOUL.md               # Code of conduct &amp; core principles
+│   ├── USER.md               # Competition scenario &amp; requirements
+│   ├── AGENTS.md             # Agent coordination settings
+│   └── TOOLS.md              # Available tools &amp; NOC API conventions
+├── skills/                   # Skill definitions for the agent
+│   ├── infra_maintenance/    # Infrastructure maintenance (config/log/alarm/memory/LLDP)
+│   ├── l2_link/              # Layer 2 link O&amp;M (interface/VLAN/MAC/STP)
+│   ├── l3_route/             # Layer 3 routing (IP/ARP/OSPF/BGP)
+│   └── adv_tunnel/           # Advanced tunnels (VXLAN/VRRP/BFD/DHCP/SRv6)
+├── evaluate_openclaw.py      # Batch evaluation script
+├── evaluate_openclaw_guideline.md  # Detailed usage guide for the evaluation script
+└── requirements.txt          # Python dependencies
+</code></pre>
+<h3>Configuration</h3>
+<ol start='' >
+<li><p><strong>Copy the <code>openclaw_config/</code> files</strong> into your local OpenClaw project&#39;s configuration directory (or symlink them) so that OpenClaw loads the agent identity, tools, and skills at startup.</p>
+</li>
+<li><p><strong>Copy the <code>skills/</code> directory</strong> into your local OpenClaw project&#39;s skills directory so that the four network O&amp;M skills (<code>infra_maintenance</code>, <code>l2_link</code>, <code>l3_route</code>, <code>adv_tunnel</code>) are available to the agent.</p>
+</li>
+<li><p><strong>Edit <code>evaluate_openclaw.py</code></strong> and set the following paths at the top of the file:</p>
+<pre><code class='language-python' lang='python'># Set to the absolute path of your local OpenClaw project directory
+OPENCLAW_DIR = r&quot;C:\path\to\your\openclaw&quot;
+
+# Set to the absolute path where OpenClaw stores session logs
+OPENCLAW_SESSION_DIR = r&quot;C:\Users\YourUser\.openclaw\agents\main\sessions&quot;
+</code></pre>
+</li>
+
+</ol>
+<h3>Running the Agent</h3>
+<pre><code class='language-shell' lang='shell'># Install Python dependencies
+pip install -r agent/requirements.txt
+
+# Run all questions from the input JSON
+python agent/evaluate_openclaw.py -i data/Phase_1/test.json
+
+# Run specific questions only
+python agent/evaluate_openclaw.py -i data/Phase_1/test.json --questions 1,2,5
+
+# Run with concurrency (max 2 for competition compliance)
+python agent/evaluate_openclaw.py -i data/Phase_1/test.json --concurrency 2
+
+# Resume from an interrupted run
+python agent/evaluate_openclaw.py -i data/Phase_1/test.json --resume
+</code></pre>
+<h3>How It Works</h3>
+<ol start='' >
+<li><strong><code>evaluate_openclaw.py</code></strong> loads questions from the input JSON file, then invokes the locally running OpenClaw agent for each question.</li>
+<li>The OpenClaw agent, guided by <code>openclaw_config/</code> (identity, tools, and behavioral rules), uses the four <strong>skills</strong> to collect device data via the API (<code>http://127.0.0.1:7860/api/agent/execute</code>).</li>
+<li>The agent analyzes the collected data and produces a final answer.</li>
+<li>The script extracts the answer from the OpenClaw session log and writes results to <code>agent/eval_results/result.csv</code>.</li>
+
+</ol>
+<h3>Output</h3>
+<p>Results are saved under <code>agent/eval_results/</code>:</p>
+<figure><table>
+<thead>
+<tr><th>File</th><th>Description</th></tr></thead>
+<tbody><tr><td><code>result.csv</code></td><td>Final answers (<code>id</code>, <code>prediction</code>) — the file to submit</td></tr><tr><td><code>eval_detail.jsonl</code></td><td>Detailed execution logs per question</td></tr><tr><td><code>progress.json</code></td><td>Progress tracking for the <code>--resume</code> feature</td></tr></tbody>
+</table></figure>
+<p>For more details on the evaluation script, see <a href='agent/evaluate_openclaw_guideline.md'><code>agent/evaluate_openclaw_guideline.md</code></a>.</p>
+</body>
+</html>

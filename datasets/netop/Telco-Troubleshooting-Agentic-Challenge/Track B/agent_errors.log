@@ -1,0 +1,112 @@
+2026-04-07 13:57:13 - [AGENT_ERROR] - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:7860
+ * Running on http://172.16.51.113:7860
+2026-04-07 13:57:13 - [AGENT_ERROR] - [33mPress CTRL+C to quit[0m
+2026-04-07 13:57:13 - [AGENT_ERROR] -  * Restarting with stat
+2026-04-07 13:59:32 - [AGENT_ERROR] - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:7860
+ * Running on http://172.16.51.113:7860
+2026-04-07 13:59:32 - [AGENT_ERROR] - [33mPress CTRL+C to quit[0m
+2026-04-07 13:59:32 - [AGENT_ERROR] -  * Restarting with stat
+2026-04-07 14:01:18 - [AGENT_ERROR] - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:7860
+ * Running on http://172.16.51.113:7860
+2026-04-07 14:01:18 - [AGENT_ERROR] - [33mPress CTRL+C to quit[0m
+2026-04-07 14:01:18 - [AGENT_ERROR] -  * Restarting with stat
+2026-04-07 14:01:50 - [AGENT_ERROR] -  * Debugger is active!
+2026-04-07 14:01:50 - [AGENT_ERROR] -  * Debugger PIN: 146-053-760
+2026-04-07 14:01:51 - [AGENT_ERROR] - 127.0.0.1 - - [07/Apr/2026 14:01:51] "[31m[1mGET /api/agent/execute HTTP/1.1[0m" 405 -
+2026-04-07 14:01:51 - [AGENT_ERROR] - 127.0.0.1 - - [07/Apr/2026 14:01:51] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-04-07 14:02:02 - [AGENT_ERROR] - 127.0.0.1 - - [07/Apr/2026 14:02:02] "[31m[1mGET /api/agent/execute HTTP/1.1[0m" 405 -
+2026-04-07 14:06:35 - [AGENT_ERROR] - 127.0.0.1 - - [07/Apr/2026 14:06:35] "[31m[1mGET /api/agent/execute HTTP/1.1[0m" 405 -
+2026-04-07 16:12:44 - [AGENT_ERROR] -  * Detected change in 'D:\\WorkSpace\\LlmFinetuning\\datasets\\netop\\Telco-Troubleshooting-Agentic-Challenge\\Track B\\agent\\evaluate_openclaw.py', reloading
+2026-04-07 16:12:44 - [AGENT_ERROR] -  * Restarting with stat
+2026-04-07 16:24:26 - [AGENT_ERROR] - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:7860
+ * Running on http://172.16.51.113:7860
+2026-04-07 16:24:26 - [AGENT_ERROR] - [33mPress CTRL+C to quit[0m
+2026-04-07 16:24:26 - [AGENT_ERROR] -  * Restarting with stat
+2026-04-07 16:25:13 - [AGENT_ERROR] -  * Debugger is active!
+2026-04-07 16:25:13 - [AGENT_ERROR] -  * Debugger PIN: 146-053-760
+2026-04-07 16:45:57 - [AGENT_ERROR] -  * Detected change in 'D:\\WorkSpace\\LlmFinetuning\\datasets\\netop\\Telco-Troubleshooting-Agentic-Challenge\\Track B\\agent\\evaluate_openclaw.py', reloading
+2026-04-07 16:45:58 - [AGENT_ERROR] -  * Restarting with stat
+2026-04-07 16:46:47 - [AGENT_ERROR] -  * Debugger is active!
+2026-04-07 16:46:47 - [AGENT_ERROR] -  * Debugger PIN: 146-053-760
+2026-04-07 16:55:48 - [AGENT_ERROR] -  * Detected change in 'D:\\WorkSpace\\LlmFinetuning\\datasets\\netop\\Telco-Troubleshooting-Agentic-Challenge\\Track B\\agent\\evaluate_openclaw.py', reloading
+2026-04-07 16:55:48 - [AGENT_ERROR] -  * Restarting with stat
+2026-04-07 16:56:34 - [AGENT_ERROR] -  * Debugger is active!
+2026-04-07 16:56:34 - [AGENT_ERROR] -  * Debugger PIN: 146-053-760
+2026-04-07 16:58:16 - [AGENT_ERROR] -  * Detected change in 'D:\\WorkSpace\\LlmFinetuning\\datasets\\netop\\Telco-Troubleshooting-Agentic-Challenge\\Track B\\agent\\evaluate_openclaw.py', reloading
+2026-04-07 16:58:16 - [AGENT_ERROR] -  * Restarting with stat
+2026-04-07 16:58:41 - [AGENT_ERROR] -  * Debugger is active!
+2026-04-07 16:58:41 - [AGENT_ERROR] -  * Debugger PIN: 146-053-760
+2026-04-07 17:02:27 - [AGENT_ERROR] -  * Detected change in 'D:\\WorkSpace\\LlmFinetuning\\datasets\\netop\\Telco-Troubleshooting-Agentic-Challenge\\Track B\\agent\\evaluate_openclaw.py', reloading
+2026-04-07 17:02:27 - [AGENT_ERROR] -  * Restarting with stat
+2026-04-07 17:03:07 - [AGENT_ERROR] -  * Debugger is active!
+2026-04-07 17:03:07 - [AGENT_ERROR] -  * Debugger PIN: 146-053-760
+2026-04-07 17:05:11 - [AGENT_ERROR] -  * Detected change in 'D:\\WorkSpace\\LlmFinetuning\\datasets\\netop\\Telco-Troubleshooting-Agentic-Challenge\\Track B\\agent\\evaluate_openclaw.py', reloading
+2026-04-07 17:05:11 - [AGENT_ERROR] -  * Restarting with stat
+2026-04-07 17:05:42 - [AGENT_ERROR] -  * Debugger is active!
+2026-04-07 17:05:42 - [AGENT_ERROR] -  * Debugger PIN: 146-053-760
+2026-04-07 17:07:31 - [AGENT_ERROR] -  * Detected change in 'D:\\WorkSpace\\LlmFinetuning\\datasets\\netop\\Telco-Troubleshooting-Agentic-Challenge\\Track B\\agent\\evaluate_openclaw.py', reloading
+2026-04-07 17:07:31 - [AGENT_ERROR] -  * Restarting with stat
+2026-04-07 17:07:57 - [AGENT_ERROR] -  * Debugger is active!
+2026-04-07 17:07:57 - [AGENT_ERROR] -  * Debugger PIN: 146-053-760
+2026-04-07 17:08:47 - [AGENT_ERROR] -  * Detected change in 'D:\\WorkSpace\\LlmFinetuning\\datasets\\netop\\Telco-Troubleshooting-Agentic-Challenge\\Track B\\agent\\evaluate_openclaw.py', reloading
+2026-04-07 17:08:47 - [AGENT_ERROR] -  * Restarting with stat
+2026-04-07 17:09:11 - [AGENT_ERROR] -  * Debugger is active!
+2026-04-07 17:09:11 - [AGENT_ERROR] -  * Debugger PIN: 146-053-760
+2026-04-07 17:09:44 - [AGENT_ERROR] -  * Detected change in 'D:\\WorkSpace\\LlmFinetuning\\datasets\\netop\\Telco-Troubleshooting-Agentic-Challenge\\Track B\\agent\\evaluate_openclaw.py', reloading
+2026-04-07 17:09:44 - [AGENT_ERROR] -  * Restarting with stat
+2026-04-07 17:10:15 - [AGENT_ERROR] -  * Debugger is active!
+2026-04-07 17:10:15 - [AGENT_ERROR] -  * Debugger PIN: 146-053-760
+2026-04-07 17:11:55 - [AGENT_ERROR] -  * Detected change in 'D:\\WorkSpace\\LlmFinetuning\\datasets\\netop\\Telco-Troubleshooting-Agentic-Challenge\\Track B\\agent\\evaluate_openclaw.py', reloading
+2026-04-07 17:11:56 - [AGENT_ERROR] -  * Restarting with stat
+2026-04-07 17:12:19 - [AGENT_ERROR] -  * Debugger is active!
+2026-04-07 17:12:19 - [AGENT_ERROR] -  * Debugger PIN: 146-053-760
+2026-04-07 17:13:09 - [AGENT_ERROR] -  * Detected change in 'D:\\WorkSpace\\LlmFinetuning\\datasets\\netop\\Telco-Troubleshooting-Agentic-Challenge\\Track B\\agent\\evaluate_openclaw.py', reloading
+2026-04-07 17:13:09 - [AGENT_ERROR] -  * Restarting with stat
+2026-04-07 17:13:39 - [AGENT_ERROR] -  * Debugger is active!
+2026-04-07 17:13:39 - [AGENT_ERROR] -  * Debugger PIN: 146-053-760
+2026-04-07 17:13:45 - [AGENT_ERROR] -  * Detected change in 'D:\\WorkSpace\\LlmFinetuning\\datasets\\netop\\Telco-Troubleshooting-Agentic-Challenge\\Track B\\agent\\evaluate_openclaw.py', reloading
+2026-04-07 17:13:45 - [AGENT_ERROR] -  * Restarting with stat
+2026-04-07 17:14:16 - [AGENT_ERROR] -  * Debugger is active!
+2026-04-07 17:14:16 - [AGENT_ERROR] -  * Debugger PIN: 146-053-760
+2026-04-07 17:16:20 - [AGENT_ERROR] -  * Detected change in 'D:\\WorkSpace\\LlmFinetuning\\datasets\\netop\\Telco-Troubleshooting-Agentic-Challenge\\Track B\\agent\\test_args.py', reloading
+2026-04-07 17:16:20 - [AGENT_ERROR] -  * Restarting with stat
+2026-04-07 17:16:48 - [AGENT_ERROR] -  * Debugger is active!
+2026-04-07 17:16:48 - [AGENT_ERROR] -  * Debugger PIN: 146-053-760
+2026-04-07 17:19:52 - [AGENT_ERROR] -  * Detected change in 'D:\\WorkSpace\\LlmFinetuning\\datasets\\netop\\Telco-Troubleshooting-Agentic-Challenge\\Track B\\agent\\test_args.py', reloading
+2026-04-07 17:19:52 - [AGENT_ERROR] -  * Restarting with stat
+2026-04-07 17:20:15 - [AGENT_ERROR] -  * Debugger is active!
+2026-04-07 17:20:15 - [AGENT_ERROR] -  * Debugger PIN: 146-053-760
+2026-04-07 17:21:44 - [AGENT_ERROR] -  * Detected change in 'D:\\WorkSpace\\LlmFinetuning\\datasets\\netop\\Telco-Troubleshooting-Agentic-Challenge\\Track B\\agent\\evaluate_openclaw.py', reloading
+2026-04-07 17:21:44 - [AGENT_ERROR] -  * Restarting with stat
+2026-04-07 17:22:11 - [AGENT_ERROR] -  * Debugger is active!
+2026-04-07 17:22:11 - [AGENT_ERROR] -  * Debugger PIN: 146-053-760
+2026-04-15 18:14:10 - [AGENT_ERROR] - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:7892
+ * Running on http://172.200.4.251:7892
+2026-04-15 18:14:10 - [AGENT_ERROR] - [33mPress CTRL+C to quit[0m
+2026-04-15 18:14:10 - [AGENT_ERROR] -  * Restarting with stat
+2026-04-15 18:14:39 - [AGENT_ERROR] -  * Debugger is active!
+2026-04-15 18:14:39 - [AGENT_ERROR] -  * Debugger PIN: 112-993-209
+2026-04-16 09:15:13 - [AGENT_ERROR] - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:7860
+ * Running on http://172.200.4.251:7860
+2026-04-16 09:15:13 - [AGENT_ERROR] - [33mPress CTRL+C to quit[0m
+2026-04-16 09:15:13 - [AGENT_ERROR] -  * Restarting with stat
+2026-04-16 09:15:45 - [AGENT_ERROR] -  * Debugger is active!
+2026-04-16 09:15:45 - [AGENT_ERROR] -  * Debugger PIN: 373-902-153
+2026-04-16 15:10:42 - [AGENT_ERROR] -  * Detected change in 'D:\\WorkSpace\\LlmFinetuning\\datasets\\netop\\Telco-Troubleshooting-Agentic-Challenge\\Track B\\agent\\evaluate_openclaw.py', reloading
+2026-04-16 15:10:43 - [AGENT_ERROR] -  * Restarting with stat
+2026-04-16 15:11:33 - [AGENT_ERROR] -  * Debugger is active!
+2026-04-16 15:11:33 - [AGENT_ERROR] -  * Debugger PIN: 373-902-153
+2026-04-16 15:44:47 - [AGENT_ERROR] -  * Detected change in 'D:\\WorkSpace\\LlmFinetuning\\scripts\\train.py', reloading
+2026-04-16 15:44:47 - [AGENT_ERROR] -  * Restarting with stat
